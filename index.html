@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribution Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            padding: 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #2e3b4e;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        label {
+            color: #2e3b4e;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus {
+            border-color: #0078d4;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005ea2;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .finalMessage {
+            padding: 20px;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 18px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .errorMessage {
+            padding: 20px;
+            background-color: #dc3545;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Contribution Tracker</h2>
+        <label for="code">Enter your 4-digit code:</label>
+        <input type="text" id="code" maxlength="4" placeholder="Code">
+        <button onclick="validateCode()">Submit Code</button>
+
+        <div id="validNamesDiv" class="hidden">
+            <label for="name">Enter your first name:</label>
+            <input type="text" id="name" placeholder="Your Name">
+            <button onclick="submitName()">Submit Name</button>
+        </div>
+
+        <div id="randomNamesDiv" class="hidden">
+            <p>Here are some valid names you can enter:</p>
+            <ul id="randomNamesList" style="list-style: none; padding-left: 0;"></ul>
+        </div>
+
+        <div id="finalMessageDiv" class="hidden">
+            <div id="finalMessage" class="finalMessage"></div>
+        </div>
+
+        <div id="errorMessageDiv" class="hidden">
+            <div id="errorMessage" class="errorMessage"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Contribution Tracker. All rights reserved.</p>
+    </div>
+
+    <script>
+        const validCodes = ["0099", "9090", "9990", "0909", "9999", "0009", "9000"];
+        const validNames = {
+            "0099": ["Aitezaz"],
+            "9090": ["Narmeen"],
+            "9990": ["Noor", "Shania"],
+            "0909": ["Zeeshan", "Shani"],
+            "9999": ["Mehmood"],
+            "0009": ["Qamar", "Chan"],
+            "9000": ["Qurat", "Anni"]
+        };
+        let validNameForCode;
+
+        function validateCode() {
+            const code = document.getElementById("code").value;
+            const validNamesDiv = document.getElementById("validNamesDiv");
+            const randomNamesDiv = document.getElementById("randomNamesDiv");
+
+            // Hide any previous messages
+            document.getElementById("finalMessageDiv").classList.add("hidden");
+            document.getElementById("errorMessageDiv").classList.add("hidden");
+
+            if (!validCodes.includes(code)) {
+                showErrorMessage();
+                return;
+            }
+
+            validNameForCode = validNames[code];
+            validNamesDiv.classList.remove("hidden");
+            randomNamesDiv.classList.add("hidden");
+        }
+
+        function showErrorMessage() {
+            const errorMessageDiv = document.getElementById("errorMessageDiv");
+            const errorMessage = document.getElementById("errorMessage");
+
+            errorMessage.innerHTML = `
+                <p><strong>Access Denied!</strong></p>
+                <p>This feels like trying to open the fridge and finding nothing... except disappointment.</p>
+                <p>Are you sure you are not testing my patience or your luck?</p>
+                <p>Hint: The Code is not '1234' or '0987' either. Try again!</p>
+                <p><em>Error: Invalid code. Program Terminating...</em></p>
+            `;
+
+            errorMessageDiv.classList.remove("hidden");
+        }
+
+        function submitName() {
+            const name = document.getElementById("name").value;
+
+            if (validNameForCode.includes(name)) {
+                showFinalMessage(name);
+            } else {
+                showRandomNames();
+            }
+        }
+
+        function showRandomNames() {
+            const randomNamesDiv = document.getElementById("randomNamesDiv");
+            const randomNamesList = document.getElementById("randomNamesList");
+
+            randomNamesList.innerHTML = "";
+
+            const randomNames = [...validNameForCode];
+            while (randomNames.length < 4) {
+                const randomName = getRandomName();
+                if (!randomNames.includes(randomName)) {
+                    randomNames.push(randomName);
+                }
+            }
+
+            randomNames.sort(() => Math.random() - 0.5);
+
+            randomNames.forEach(name => {
+                const li = document.createElement("li");
+                li.textContent = name;
+                li.style.padding = "8px";
+                li.style.backgroundColor = "#f0f4f8";
+                li.style.margin = "5px 0";
+                li.style.borderRadius = "5px";
+                randomNamesList.appendChild(li);
+            });
+
+            randomNamesDiv.classList.remove("hidden");
+        }
+
+        function showFinalMessage(name) {
+            const finalMessageDiv = document.getElementById("finalMessageDiv");
+            const finalMessage = document.getElementById("finalMessage");
+
+            let contributionMessage;
+
+            switch (name) {
+                case "Aitezaz":
+                    contributionMessage = "We expect you to contribute at least Rs.300!";
+                    break;
+                case "Narmeen":
+                    contributionMessage = "We expect you to contribute at least Rs.200!";
+                    break;
+                case "Noor":
+                case "Shania":
+                    contributionMessage = "We expect you to contribute at least Rs.200!";
+                    break;
+                case "Zeeshan":
+                case "Shani":
+                    contributionMessage = "We expect you to contribute at least Rs.500!";
+                    break;
+                case "Mehmood":
+                    contributionMessage = "We expect you to contribute at least Rs.400!";
+                    break;
+                case "Qamar":
+                case "Chan":
+                    contributionMessage = "We expect you to contribute at least Rs.900! Or More. We know You can Contribute More.";
+                    break;
+                case "Qurat":
+                case "Anni":
+                    contributionMessage = "The choice is yours—contribute the way you feel!";
+                    break;
+                default:
+                    contributionMessage = "Your contribution is invaluable!";
+                    break;
+            }
+
+            finalMessage.innerHTML = `Congratulations, ${name}! <strong>${contributionMessage}</strong><br><br>
+                                      <strong>Your contribution is limitless. Just give from the heart!</strong><br>
+                                      <strong>IF YOU UNDERSTAND.</strong>`;
+
+            finalMessageDiv.classList.remove("hidden");
+
+            showExitMessage();
+        }
+
+        
+        function getRandomName() {
+            const allNames = ["Aitezaz", "Narmeen", "Noor", "Shania", "Zeeshan", "Shani", "Mehmood", "Qamar", "Chan", "Qurat", "Anni"];
+            return allNames[Math.floor(Math.random() * allNames.length)];
+        }
+    </script>
+</body>
+</html>
