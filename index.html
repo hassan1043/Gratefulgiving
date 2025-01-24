@@ -125,6 +125,12 @@
             <button onclick="submitName()">Submit Name</button>
         </div>
 
+        <div id="secondaryCodeDiv" class="hidden">
+            <label for="secondaryCode">Enter the secondary code:</label>
+            <input type="text" id="secondaryCode" maxlength="4" placeholder="Secondary Code">
+            <button onclick="verifySecondaryCode()">Submit Secondary Code</button>
+        </div>
+
         <div id="errorMessageDiv" class="hidden">
             <div id="errorMessage" class="errorMessage"></div>
         </div>
@@ -150,6 +156,7 @@
             "9000": ["Qurat", "Anni"]
         };
         let validNameForCode;
+        const secondaryCode = "1234";
 
         function validateCode() {
             const code = document.getElementById("code").value;
@@ -158,7 +165,7 @@
             document.getElementById("errorMessageDiv").classList.add("hidden");
 
             if (!validCodes.includes(code)) {
-                showErrorMessage("Invalid code! Try again.");
+                showErrorMessage("Wow, I’ve seen some bad code, but this one deserves a medal");
                 return;
             }
 
@@ -178,23 +185,21 @@
             const name = document.getElementById("name").value;
 
             if (validNameForCode.includes(name)) {
-                startBiometricCheck();
+                document.getElementById("validNamesDiv").classList.add("hidden");
+                document.getElementById("secondaryCodeDiv").classList.remove("hidden");
+                startAccessDeniedTimer();
             } else {
-                showErrorMessage("Invalid name for the entered code!");
+                showErrorMessage("Undefined name. Please reboot your memory/brain and try again.");
             }
         }
 
-        function startBiometricCheck() {
-            if (window.PublicKeyCredential) {
-                navigator.credentials.get({ publicKey: { challenge: new Uint8Array(26), allowCredentials: [] } })
-                    .then(() => {
-                        startAccessDeniedTimer();
-                    })
-                    .catch(() => {
-                        startAccessDeniedTimer();
-                    });
+        function verifySecondaryCode() {
+            const enteredCode = document.getElementById("secondaryCode").value;
+
+            if (enteredCode === secondaryCode) {
+                alert("Secondary code verified successfully!");
             } else {
-                startAccessDeniedTimer();
+                alert("Incorrect secondary code.");
             }
         }
 
